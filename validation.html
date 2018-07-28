@@ -52,6 +52,10 @@
             <div class="panel-body">
               <form id="signupForm" method="post" class="" action="" novalidate="novalidate">
               
+                <div class="form-group">
+                  <label class="control-label" for="digits">現金金額</label>
+                    <input type="text" class="form-control" id="digits" name="digits" placeholder="請輸入整數且必填">
+                </div>
 
                 <div class="form-group">
                   <label class="control-label" for="firstname">First name</label>
@@ -101,7 +105,6 @@
               <script type="text/javascript">
 
                 $( document ).ready( function () {
-
                   $( "#signupForm" ).validate( {
                     submitHandler: function(form) {
                        //驗證成功之後就會進到這邊：
@@ -111,6 +114,10 @@
                        form.submit();
                     },
                     rules: {
+                      digits: {
+                        required: true,      //必填
+                        digits:true          //必须输入整数
+                      },
                       firstname: "required", //必填
                       lastname: "required",  //必填
                       username: {
@@ -134,6 +141,10 @@
                     },
 
                     messages: {
+                      digits: {
+                        required: "現金金額為必填",
+                        digits: "必须输入整数"
+                      },
                       firstname: "Please enter your firstname",
                       lastname: "Please enter your lastname",
                       username: {
@@ -192,8 +203,8 @@
                       $( element ).closest( "div.form-group" ).addClass( "has-success" ).removeClass( "has-error" );
                       $( element ).next( "span" ).addClass( "glyphicon-ok" ).removeClass( "glyphicon-remove" );
                     }
-                  } );
-                } );
+                  });
+                });
               </script>
             </div>
           </div>

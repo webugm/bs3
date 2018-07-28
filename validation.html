@@ -21,6 +21,8 @@
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="http://cdn.bootcss.com/prettify/r298/prettify.css" rel="stylesheet">
+    <script src="http://cdn.bootcss.com/prettify/r298/prettify.js"></script>
   </head>
   <body>
 
@@ -30,7 +32,7 @@
     
     <div class="container">
       <div class="row">
-        <div class="col-sm-8 col-sm-offset-2">
+        <div class="col-sm-10 col-sm-offset-1">
           <div class="page-header">
             <div class="alert alert-info" role="alert">
               <h4>This demo shows how to integrate JQuery-validation and the Bootstrap framework.</h4>
@@ -44,17 +46,108 @@
               </ul>
             </div>
           </div>
+          <div class="page-header">
+            <h4>b3 - 引入</h4>
+            <pre class="prettyprint">
+              
+              &lt;!-- jquery.validate/validate.css --&gt;
+              &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;&lt;{xoAppUrl}&gt;modules/ugm_tools2/class/jquery.validate/validate.css&quot;&gt;
+
+              &lt;script type=&quot;text/javascript&quot; src=&quot;&lt;{xoAppUrl}&gt;modules/ugm_tools2/class/jquery.validate/jquery.validate.min.js&quot;&gt;&lt;/script&gt;
+
+            </pre>
+
+            <h4>b3 - 調用插件</h4>
+            <pre class="prettyprint">
+            
+              &lt;script type=&quot;text/javascript&quot;&gt;   
+                $( document ).ready( function () {
+                  $( &quot;#myForm&quot; ).validate( {
+                    submitHandler: function(form) {
+                        //驗證成功之後就會進到這邊：
+                        //方法一：直接把表單 POST 或 GET 到你的 Action URL
+                        //方法二：讀取某些欄位的資料，ajax 給別的 API。
+                        //此處測試方法一的寫法如下：
+                        form.submit();
+                    },
+                    rules: {
+                      no: &quot;required&quot;, //必填
+                      money: {
+                        required: true,      //必填
+                        digits:true          //必须输入整数
+                      },
+                    },
+
+                    messages: {
+                      no: &quot;優惠現金券號碼為必填&quot;,
+                      money: {
+                        required: &quot;優惠現金券金額為必填&quot;,
+                        digits: &quot;必须输入整数&quot;
+                      },
+                    },
+                    errorElement: &quot;em&quot;,
+                    errorPlacement: function ( error, element ) {
+                      // Add the &#x60;help-block&#x60; class to the error element
+                      error.addClass( &quot;help-block&quot; );
+
+                      // Add &#x60;has-feedback&#x60; class to the parent div.form-group
+                      // in order to add icons to inputs
+                      element.closest( &quot;div.form-group&quot; ).addClass( &quot;has-feedback&quot; );
+
+                      //因checkbox、radio，外面多一層 label
+                      if ( element.prop( &quot;type&quot; ) === &quot;checkbox&quot; ||  element.prop( &quot;type&quot; ) === &quot;radio&quot;) {
+                        error.insertAfter( element.parent( &quot;label&quot; ) );
+                      } else {
+                        error.insertAfter( element );
+                      }
+
+                      // Add the span element, if doesn&#x27;t exists, and apply the icon classes to it.
+                      if ( !element.next( &quot;span&quot; )[ 0 ] ) {
+                        $( &quot;&lt;span class=&#x27;glyphicon glyphicon-remove form-control-feedback&#x27;&gt;&lt;/span&gt;&quot; ).insertAfter( element );
+                      }
+                    },
+                    success: function ( label, element ) {
+                      // Add the span element, if doesn&#x27;t exists, and apply the icon classes to it.
+                      if ( !$( element ).next( &quot;span&quot; )[ 0 ] ) {
+                        $( &quot;&lt;span class=&#x27;glyphicon glyphicon-ok form-control-feedback&#x27;&gt;&lt;/span&gt;&quot; ).insertAfter(  element );
+                      }
+                    },
+                    highlight: function ( element, errorClass, validClass ) {
+                      //驗證失敗要做的事
+                      //在父親(div)+ has-error - has-success
+                      //在後面(span) + glyphicon-remove - glyphicon-ok
+
+                      $( element ).closest( &quot;div.form-group&quot; ).addClass( &quot;has-error&quot; ).removeClass( &quot;has-success&quot; );
+                      $( element ).next( &quot;span&quot; ).addClass( &quot;glyphicon-remove&quot; ).removeClass( &quot;glyphicon-ok&quot; );
+                    },
+                    unhighlight: function ( element, errorClass, validClass ) {
+                      //驗證成功要做的事
+                      $( element ).closest( &quot;div.form-group&quot; ).addClass( &quot;has-success&quot; ).removeClass( &quot;has-error&quot; );
+                      $( element ).next( &quot;span&quot; ).addClass( &quot;glyphicon-ok&quot; ).removeClass( &quot;glyphicon-remove&quot; );
+                    }
+                  });
+                });
+              &lt;/script&gt;
+
+            </pre>
+
+          </div>
     
           <div class="panel panel-default">
             <div class="panel-heading">
               <h3 class="panel-title">Simple Form</h3>
             </div>
             <div class="panel-body">
-              <form id="signupForm" method="post" class="" action="" novalidate="novalidate">
-              
-                <div class="form-group">
-                  <label class="control-label" for="digits">現金金額</label>
-                    <input type="text" class="form-control" id="digits" name="digits" placeholder="請輸入整數且必填">
+              <form id="myForm" method="post" class="" action="" novalidate="novalidate">
+                <div class="row">
+
+                  <div class="col-sm-4">                  
+                    <div class="form-group">
+                      <label class="control-label" for="digits">現金金額</label>
+                      <input type="text" class="form-control" id="digits" name="digits" placeholder="請輸入整數且必填">
+                    </div>                    
+                  </div>
+
                 </div>
 
                 <div class="form-group">
@@ -105,7 +198,7 @@
               <script type="text/javascript">
 
                 $( document ).ready( function () {
-                  $( "#signupForm" ).validate( {
+                  $( "#myForm" ).validate( {
                     submitHandler: function(form) {
                        //驗證成功之後就會進到這邊：
                        //方法一：直接把表單 POST 或 GET 到你的 Action URL
